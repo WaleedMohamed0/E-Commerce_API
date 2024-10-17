@@ -1,10 +1,10 @@
-using E_Commerce.Core.Mapping;
 using E_Commerce.Repository.Data;
 using E_Commerce.Repository.Data.Repos;
 using E_Commerce.Service.Services.Products;
 using E_Commerce.Repository.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using E_Commerce.Service.Services.BrandsAndTypes;
+using E_Commerce_API.Mapping;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -22,6 +22,7 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IBrandTypeService, BrandTypeService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(m=>m.AddProfile(new ProductProfile(builder.Configuration)));
+builder.Services.AddAutoMapper(m => m.AddProfile(new BrandsAndTypesProfile(builder.Configuration)));
 
 
 var app = builder.Build();

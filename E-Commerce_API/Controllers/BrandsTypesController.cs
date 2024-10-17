@@ -43,7 +43,7 @@ namespace E_Commerce_API.Controllers
                 return GeneralResponse.Failure("Brand not found");
             }
             await brandService.DeleteBrand(id);
-            return GeneralResponse.Success("Brand deleted successfully");
+            return GeneralResponse.Success($"Brand {brand.Name} deleted successfully");
         }
 
         // Product Types
@@ -63,6 +63,9 @@ namespace E_Commerce_API.Controllers
             var type = await brandService.GetTypesByName(name);
             return type == null ? GeneralResponse.Failure("Type not found") : GeneralResponse.Success(type);
         }
+        [HttpPost("AddType")]
+        public async Task<TypeBrandDTO?> AddType(AddTypeBrandDTO type)
+            => type == null ? null : await brandService.AddType(type);
         [HttpDelete("DeleteType/{id}")]
         public async Task<GeneralResponse> DeleteType(int id)
         {
@@ -72,7 +75,7 @@ namespace E_Commerce_API.Controllers
                 return GeneralResponse.Failure("Type not found");
             }
             await brandService.DeleteType(id);
-            return GeneralResponse.Success("Type deleted successfully");
+            return GeneralResponse.Success($"Type {type.Name} deleted successfully");
         }
     }
 }
