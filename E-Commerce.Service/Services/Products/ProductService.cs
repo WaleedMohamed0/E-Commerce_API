@@ -6,6 +6,7 @@ using E_Commerce.Core.Specifications.Products;
 using E_Commerce.Core.Specifications.ProductTypes;
 using E_Commerce.Core.Specifications.Brands;
 using E_Commerce.Core.DTOs.ProductDTOs;
+using E_Commerce.Core.Helper;
 
 namespace E_Commerce.Service.Services.Products
 {
@@ -20,11 +21,14 @@ namespace E_Commerce.Service.Services.Products
             this.mapper = mapper;
         }
 
-        public async Task<IEnumerable<ReadProductsDTO>> GetAllProducts(string? sort)
+        public async Task<ProductResponse<ReadProductsDTO>> GetAllProducts(ProductSpecParams productSpec)
         {
-            var specs = new ProductSpecifications(sort);
+            var specs = new ProductSpecifications(productSpec);
             var products = await unitOfWork.genericRepository<Product, int>().GetAllWithSpecAsync(specs);
-            return mapper.Map<IEnumerable<ReadProductsDTO>>(products);
+            var mappedProducts = mapper.Map<IEnumerable<ReadProductsDTO>>(products);
+            var countSpecs = new ProductWithCountSpec(productSpec);
+            var count = await unitOfWork.genericRepository<Product, int>().GetCountAsync(countSpecs);
+            return new ProductResponse<ReadProductsDTO>(productSpec.Limit, productSpec.Page,count, mappedProducts);
         }
 
         public async Task<ReadProductsDTO> GetProductById(int id)

@@ -12,15 +12,16 @@ namespace E_Commerce.Core.Specifications.Products
         {
             AddIncludes();
         }
-        public ProductSpecifications(string? sort = null, string? name = null)
+        public ProductSpecifications(string name) : base(p => p.Name.ToLower().Contains(name.ToLower()))
         {
-            if (!string.IsNullOrEmpty(name))
+            AddIncludes();
+        }
+        public ProductSpecifications(ProductSpecParams productSpec)
+            : base(p => (productSpec.BrandId == null || productSpec.BrandId == p.BrandId) && (productSpec.TypeId == null || productSpec.TypeId == p.TypeId))
+        {
+            if(!string.IsNullOrEmpty(productSpec.Sort))
             {
-                Criteria = p => p.Name.ToLower().Contains(name.ToLower());
-            }
-            if(!string.IsNullOrEmpty(sort))
-            {
-                switch (sort)
+                switch (productSpec.Sort)
                 {
                     case "priceAsc":
                         AddOrderBy(p => p.Price);
@@ -35,11 +36,18 @@ namespace E_Commerce.Core.Specifications.Products
             }
            
             AddIncludes();
+            ApplyPagination(productSpec.Limit, productSpec.Page);
         }
         public void AddIncludes()
         {
             Includes.Add(p=> p.Brand);
             Includes.Add(p => p.Type);
+        }
+        public void ApplyPagination(int limit, int page)
+        {
+            IsPagingEnabled = true;
+            Take = limit;
+            Skip = (page - 1) * limit;
         }
     }
 }

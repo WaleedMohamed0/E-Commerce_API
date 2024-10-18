@@ -26,6 +26,10 @@ namespace E_Commerce.Repository
             {
                 query = query.OrderByDescending(specification.OrderByDescending);
             }
+            if(specification.IsPagingEnabled)
+            {
+                query = query.Skip(specification.Skip).Take(specification.Take);
+            }
             query = specification.Includes.Aggregate(query, (current, include) => current.Include(include));
             return query;
         }

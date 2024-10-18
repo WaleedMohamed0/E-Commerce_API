@@ -2,6 +2,8 @@
 using E_Commerce.Core.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using E_Commerce.Core.DTOs.ProductDTOs;
+using E_Commerce.Core.Specifications.Products;
+using E_Commerce.Core.Helper;
 
 namespace E_Commerce_API.Controllers
 {
@@ -15,8 +17,8 @@ namespace E_Commerce_API.Controllers
             this.productService = productService;
         }
         [HttpGet()]
-        public async Task<IEnumerable<ReadProductsDTO>> GetAllProducts([FromQuery] string? sort)
-            => await productService.GetAllProducts(sort);
+        public async Task<ProductResponse<ReadProductsDTO>> GetAllProducts([FromQuery]ProductSpecParams productSpec)
+            => await productService.GetAllProducts(productSpec);
         
         [HttpGet("GetProduct/{id:int}")]
         public async Task<GeneralResponse> GetProductById(int id)

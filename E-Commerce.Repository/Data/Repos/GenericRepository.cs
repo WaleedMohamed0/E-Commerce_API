@@ -23,45 +23,18 @@ namespace E_Commerce.Repository.Data.Repos
         {
             context.Remove(entity);
         }
-
-        //public async Task<IEnumerable<TEntity>?> GetAllAsync()
-        //{
-        //    if (typeof(TEntity) == typeof(Product))
-        //    {
-        //        return await context.Set<Product>()
-        //            .Include(p => p.Brand)
-        //            .Include(p => p.Type)
-        //            .ToListAsync() as IEnumerable<TEntity>;
-        //    }
-        //    return await context.Set<TEntity>().ToListAsync();
-        //}
-
         public async Task<IEnumerable<TEntity>> GetAllWithSpecAsync(ISpecifications<TEntity, TKey> specs)
-        {
-            return await ApplySpecifications(specs).ToListAsync();
-        }
-
-        //public async Task<TEntity?> GetByIdAsync(TKey id)
-        //{
-        //    if (typeof(TEntity) == typeof(Product))
-        //    {
-        //        return await context.Set<Product>()
-        //            .Include(p => p.Brand)
-        //            .Include(p => p.Type)
-        //            .FirstOrDefaultAsync(p => p.Id == id as int?) as TEntity;
-        //    }
-        //    return await context.Set<TEntity>().FindAsync(id);
-        //}
-
+        => await ApplySpecifications(specs).ToListAsync();
+        
         public async Task<TEntity> GetByIdWithSpecAsync(ISpecifications<TEntity, TKey> specs)
-        {
-            return await ApplySpecifications(specs).FirstOrDefaultAsync();
-        }
+            => await ApplySpecifications(specs).FirstOrDefaultAsync();
+        
 
-        public Task<TEntity> GetByNameAsync(ISpecifications<TEntity, TKey> specs)
-        {
-            return ApplySpecifications(specs).FirstOrDefaultAsync();
-        }
+        public async Task<TEntity> GetByNameAsync(ISpecifications<TEntity, TKey> specs)
+        => await ApplySpecifications(specs).FirstOrDefaultAsync();
+
+        public async Task<int> GetCountAsync(ISpecifications<TEntity, TKey> spec)
+            => await ApplySpecifications(spec).CountAsync();
 
         public void Update(TEntity entity)
         {
