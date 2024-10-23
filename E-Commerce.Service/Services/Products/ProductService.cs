@@ -38,7 +38,7 @@ namespace E_Commerce.Service.Services.Products
             var product = await unitOfWork.genericRepository<Product, int>().GetByIdWithSpecAsync(specs);
             return mapper.Map<ReadProductsDTO>(product);
         }
-        public async Task<IEnumerable<ReadProductsDTO>> GetProductsByName(string name)
+        public async Task<IEnumerable<ReadProductsDTO>> SearchByName(string name)
         {
             var specs = new ProductSpecifications(name: name);
             var products = await unitOfWork.genericRepository<Product, int>().GetAllWithSpecAsync(specs);

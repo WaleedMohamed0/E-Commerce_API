@@ -27,10 +27,10 @@ namespace E_Commerce_API.Controllers
             return product == null ? GeneralResponse.Failure("Product not found") : GeneralResponse.Success(product);
         }
 
-        [HttpGet("GetProducts/{name}")]
-        public async Task<GeneralResponse> GetProductsByName(string name)
+        [HttpGet("SearchProducts/{name}")]
+        public async Task<GeneralResponse> SearchByName(string name)
         {
-            var product = await productService.GetProductsByName(name);
+            var product = await productService.SearchByName(name);
             return product == null ? GeneralResponse.Failure("No Product found") : GeneralResponse.Success(product);
         }
 

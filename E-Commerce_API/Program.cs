@@ -5,6 +5,9 @@ using E_Commerce.Repository.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using E_Commerce.Service.Services.BrandsAndTypes;
 using E_Commerce_API.Mapping;
+using Microsoft.AspNetCore.Mvc;
+using E_Commerce_API.Errors;
+using E_Commerce_API.Middlewares;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -23,7 +26,22 @@ builder.Services.AddScoped<IBrandTypeService, BrandTypeService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(m=>m.AddProfile(new ProductProfile(builder.Configuration)));
 builder.Services.AddAutoMapper(m => m.AddProfile(new BrandsAndTypesProfile(builder.Configuration)));
-
+// To Handle Validation Error
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+    {
+        options.InvalidModelStateResponseFactory = actionContext =>
+        {
+            var errors = actionContext.ModelState
+                .Where(e => e.Value.Errors.Count > 0)
+                .SelectMany(x => x.Value.Errors)
+                .Select(x => x.ErrorMessage).ToArray();
+            var errorResponse = new ApiValidationErrorResponse
+            {
+                Errors = errors
+            };
+            return new BadRequestObjectResult(errorResponse);
+        };
+    });
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
@@ -44,6 +62,8 @@ catch (Exception ex)
     var logger = LoggerFactory.CreateLogger<Program>();
     logger.LogError(ex, "An error occurred while migrating the database.");
 }
+// To Handle Server Error
+app.UseMiddleware<ExceptionMiddleWare>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

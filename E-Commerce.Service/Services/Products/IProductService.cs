@@ -8,7 +8,7 @@ namespace E_Commerce.Service.Services.Products
     {
         Task<ProductResponse<ReadProductsDTO>> GetAllProducts(ProductSpecParams productSpec);
         Task<ReadProductsDTO> GetProductById(int id);
-        Task<IEnumerable<ReadProductsDTO>> GetProductsByName(string name);
+        Task<IEnumerable<ReadProductsDTO>> SearchByName(string name);
         Task<ReadProductsDTO> AddProduct(AddProductDTO product);
         Task DeleteProduct(int id);
     }
