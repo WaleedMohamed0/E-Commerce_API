@@ -5,9 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace E_Commerce_API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ErrorsController : ControllerBase
+    [ApiExplorerSettings(IgnoreApi = true)]
+    public class ErrorsController : BaseController
     {
         private readonly StoreDbContext context;
 
@@ -15,7 +14,9 @@ namespace E_Commerce_API.Controllers
         {
             this.context = context;
         }
-        [HttpGet("not-found")]
+        // a specific route to test the not found error
+        [Route("/not-found")]
+        [HttpGet]
         public IActionResult NotFoundError()
         {
             return NotFound(new ApiErrorsResponse(StatusCodes.Status404NotFound));
