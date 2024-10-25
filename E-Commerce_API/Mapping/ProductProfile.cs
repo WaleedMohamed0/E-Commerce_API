@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using E_Commerce.Core.Models;
-using E_Commerce.Core.DTOs;
 using E_Commerce.Core.DTOs.ProductDTOs;
+using E_Commerce.Core.DTOs.BrandTypeDTO;
 
 namespace E_Commerce_API.Mapping
 {

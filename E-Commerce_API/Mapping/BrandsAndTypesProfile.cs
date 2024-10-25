@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using E_Commerce.Core.DTOs;
+using E_Commerce.Core.DTOs.BrandTypeDTO;
 using E_Commerce.Core.Models;
 
 namespace E_Commerce_API.Mapping

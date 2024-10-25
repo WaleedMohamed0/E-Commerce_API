@@ -1,4 +1,4 @@
-﻿using E_Commerce.Core.DTOs;
+﻿using E_Commerce.Core.DTOs.BrandTypeDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;

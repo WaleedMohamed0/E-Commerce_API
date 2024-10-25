@@ -3,7 +3,7 @@
     public class ApiValidationErrorResponse : ApiErrorsResponse
     {
         public IEnumerable<string>? Errors { get; set; }
-        public ApiValidationErrorResponse() : base(400)
+        public ApiValidationErrorResponse() : base(StatusCodes.Status400BadRequest)
         {
         }
     }

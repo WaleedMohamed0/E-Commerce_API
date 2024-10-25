@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using E_Commerce.Repository.Data.Repos;
 using E_Commerce.Core.Models;
-using E_Commerce.Core.DTOs;
 using E_Commerce.Core.Specifications.Products;
 using E_Commerce.Core.Specifications.ProductTypes;
 using E_Commerce.Core.Specifications.Brands;
 using E_Commerce.Core.DTOs.ProductDTOs;
 using E_Commerce.Core.Helper;
+using E_Commerce.Core.DTOs.BrandTypeDTO;
 
 namespace E_Commerce.Service.Services.Products
 {

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using E_Commerce.Core.DTOs;
+using E_Commerce.Core.DTOs.BrandTypeDTO;
 using E_Commerce.Core.Models;
 using E_Commerce.Core.Specifications.Brands;
 using E_Commerce.Core.Specifications.ProductTypes;

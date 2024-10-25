@@ -16,13 +16,15 @@ namespace E_Commerce_API.Controllers
         {
             this.productService = productService;
         }
+        [ProducesResponseType(typeof(ProductResponse<ReadProductsDTO>),StatusCodes.Status200OK)]
         [HttpGet()]
         public async Task<IActionResult> GetAllProducts([FromQuery] ProductSpecParams productSpec)
         {
             var products = await productService.GetAllProducts(productSpec);
             return products == null ? NotFound(new ApiErrorsResponse(StatusCodes.Status404NotFound, "No Product found")) : Ok(GeneralResponse.Success(products));
         }
-        
+        [ProducesResponseType(typeof(ProductResponse<ReadProductsDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorsResponse),StatusCodes.Status404NotFound)]
         [HttpGet("GetProduct/{id:int}")]
         public async Task<IActionResult> GetProductById(int id)
         {
@@ -30,6 +32,8 @@ namespace E_Commerce_API.Controllers
             return product == null ? NotFound(new ApiErrorsResponse(StatusCodes.Status404NotFound, "No Product found")) : Ok(GeneralResponse.Success(product));
         }
 
+        [ProducesResponseType(typeof(ProductResponse<ReadProductsDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorsResponse), StatusCodes.Status404NotFound)]
         [HttpGet("SearchProducts/{name}")]
         public async Task<IActionResult> SearchByName(string name)
         {
@@ -37,10 +41,18 @@ namespace E_Commerce_API.Controllers
             return product == null ? NotFound(new ApiErrorsResponse(StatusCodes.Status404NotFound, "No Product found")) : Ok(GeneralResponse.Success(product));
         }
 
+        [ProducesResponseType(typeof(ReadProductsDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorsResponse), StatusCodes.Status400BadRequest)]
         [HttpPost("AddProduct")]
-        public async Task<ReadProductsDTO?> AddProduct(AddProductDTO product)
-            => product == null ? null : await productService.AddProduct(product);
+        public async Task<ActionResult<ReadProductsDTO>?> AddProduct(AddProductDTO product)
+        {
+            var newProduct = await productService.AddProduct(product);
+            return Ok(GeneralResponse.Success(newProduct));
+        }
+        
 
+        [ProducesResponseType(typeof(ReadProductsDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorsResponse), StatusCodes.Status404NotFound)]
         [HttpDelete("DeleteProduct/{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {

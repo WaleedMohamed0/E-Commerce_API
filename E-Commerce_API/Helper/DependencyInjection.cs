@@ -6,6 +6,7 @@ using E_Commerce_API.Errors;
 using E_Commerce_API.Mapping;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 namespace E_Commerce_API.Helper
 {
@@ -19,6 +20,7 @@ namespace E_Commerce_API.Helper
             services.AddUserDefinedServices();
             services.AddAutoMapper(configuration);
             services.HandleValidationError();
+            services.AddRedisService(configuration);
             return services;
         }
         private static IServiceCollection AddSwagger(this IServiceCollection services)
@@ -40,12 +42,14 @@ namespace E_Commerce_API.Helper
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IBrandTypeService, BrandTypeService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IBasketRepository, BasketRepository>();
             return services;
         }
         private static IServiceCollection AddAutoMapper(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAutoMapper(m => m.AddProfile(new ProductProfile(configuration)));
             services.AddAutoMapper(m => m.AddProfile(new BrandsAndTypesProfile(configuration)));
+            services.AddAutoMapper(m => m.AddProfile(new BasketProfile()));
             return services;
         }
         private static IServiceCollection HandleValidationError(this IServiceCollection services)
@@ -58,14 +62,21 @@ namespace E_Commerce_API.Helper
                         .Where(e => e.Value.Errors.Count > 0)
                         .SelectMany(x => x.Value.Errors)
                         .Select(x => x.ErrorMessage).ToArray();
-                    var errorResponse = new ApiValidationErrorResponse
-                    {
-                        Errors = errors
-                    };
+                    var errorResponse = new ApiValidationErrorResponse{Errors = errors};
                     return new BadRequestObjectResult(errorResponse);
                 };
             });
             return services;
         }
+       private static IServiceCollection AddRedisService(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddSingleton<IConnectionMultiplexer>(serviceProvider =>
+            {
+                var connection = configuration.GetConnectionString("Redis");
+                return ConnectionMultiplexer.Connect(connection);
+            });
+            return services;
+        }
     }
+    
 }

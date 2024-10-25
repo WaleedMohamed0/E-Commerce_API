@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace E_Commerce.Core.DTOs
+namespace E_Commerce.Core.DTOs.BrandTypeDTO
 {
     public class TypeBrandDTO
     {
