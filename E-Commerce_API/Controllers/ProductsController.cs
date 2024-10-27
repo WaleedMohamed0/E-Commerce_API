@@ -1,14 +1,14 @@
 ﻿using E_Commerce.Service.Services.Products;
-using E_Commerce.Core.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using E_Commerce.Core.DTOs.ProductDTOs;
 using E_Commerce.Core.Specifications.Products;
 using E_Commerce.Core.Helper;
 using E_Commerce_API.Errors;
-using E_Commerce.Core.Models;
+using E_Commerce_API.Attributes;
 
 namespace E_Commerce_API.Controllers
 {
+    [Cached(200)]
     public class ProductsController : BaseController
     {
         private readonly IProductService productService;

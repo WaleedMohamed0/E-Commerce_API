@@ -18,7 +18,7 @@ namespace E_Commerce_API.Controllers
             this.mapper = mapper;
         }
         [ProducesResponseType<CustomerBasket>(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType<ApiErrorsResponse>(StatusCodes.Status404NotFound)]
         [HttpGet]
         public async Task<IActionResult> GetBasket(string basketId)
         {
@@ -31,13 +31,13 @@ namespace E_Commerce_API.Controllers
             var updated = await _basket.UpdateBasketAsync(mapper.Map<CustomerBasket>(basketDTO));
             return Ok(updated);
         }
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType<CustomerBasket>(StatusCodes.Status200OK)]
+        [ProducesResponseType<ApiErrorsResponse>(StatusCodes.Status404NotFound)]
         [HttpDelete]
         public async Task<IActionResult> DeleteBasket(string basketId)
         {
             var deleted = await _basket.DeleteBasketAsync(basketId);
-            return deleted ? Ok(GeneralResponse.Success("Basket deleted successfully"))
+            return deleted ? Ok(GeneralResponse.Success(message:"Basket deleted successfully"))
                 : NotFound(new ApiErrorsResponse(StatusCodes.Status404NotFound, "Basket not found"));
         }
     }

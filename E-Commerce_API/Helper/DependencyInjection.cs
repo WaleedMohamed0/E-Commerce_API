@@ -1,9 +1,14 @@
-﻿using E_Commerce.Repository.Data.Contexts;
+﻿using E_Commerce.Core.Models.Identity;
+using E_Commerce.Repository.Data.Contexts;
 using E_Commerce.Repository.Data.Repos;
 using E_Commerce.Service.Services.BrandsAndTypes;
+using E_Commerce.Service.Services.Caching;
 using E_Commerce.Service.Services.Products;
+using E_Commerce.Service.Services.Tokens;
+using E_Commerce.Service.Services.User;
 using E_Commerce_API.Errors;
 using E_Commerce_API.Mapping;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
@@ -12,7 +17,7 @@ namespace E_Commerce_API.Helper
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddDependency(this IServiceCollection services,IConfiguration configuration)
+        public static IServiceCollection AddDependency(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddControllers();
             services.AddSwagger();
@@ -21,6 +26,7 @@ namespace E_Commerce_API.Helper
             services.AddAutoMapper(configuration);
             services.HandleValidationError();
             services.AddRedisService(configuration);
+            services.AddIdentityService();
             return services;
         }
         private static IServiceCollection AddSwagger(this IServiceCollection services)
@@ -29,11 +35,15 @@ namespace E_Commerce_API.Helper
             services.AddSwaggerGen();
             return services;
         }
-        private static IServiceCollection AddDbContext(this IServiceCollection services,IConfiguration configuration)
+        private static IServiceCollection AddDbContext(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<StoreDbContext>(options =>
             {
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("E-Commerce.Repository"));
+            });
+            services.AddDbContext<StoreIdentityDbContext>(options =>
+            {
+                options.UseSqlServer(configuration.GetConnectionString("IdentityConnection"), b => b.MigrationsAssembly("E-Commerce.Repository"));
             });
             return services;
         }
@@ -43,6 +53,9 @@ namespace E_Commerce_API.Helper
             services.AddScoped<IBrandTypeService, BrandTypeService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IBasketRepository, BasketRepository>();
+            services.AddScoped<ICacheService, CacheService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IUserService, UserService>();
             return services;
         }
         private static IServiceCollection AddAutoMapper(this IServiceCollection services, IConfiguration configuration)
@@ -62,13 +75,13 @@ namespace E_Commerce_API.Helper
                         .Where(e => e.Value.Errors.Count > 0)
                         .SelectMany(x => x.Value.Errors)
                         .Select(x => x.ErrorMessage).ToArray();
-                    var errorResponse = new ApiValidationErrorResponse{Errors = errors};
+                    var errorResponse = new ApiValidationErrorResponse { Errors = errors };
                     return new BadRequestObjectResult(errorResponse);
                 };
             });
             return services;
         }
-       private static IServiceCollection AddRedisService(this IServiceCollection services, IConfiguration configuration)
+        private static IServiceCollection AddRedisService(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton<IConnectionMultiplexer>(serviceProvider =>
             {
@@ -77,6 +90,11 @@ namespace E_Commerce_API.Helper
             });
             return services;
         }
+        private static IServiceCollection AddIdentityService(this IServiceCollection services)
+        {
+            services.AddIdentity<AppUser, IdentityRole>()
+                .AddEntityFrameworkStores<StoreIdentityDbContext>();
+            return services;
+        }
     }
-    
 }

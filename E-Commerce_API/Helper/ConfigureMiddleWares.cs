@@ -1,6 +1,9 @@
-﻿using E_Commerce.Repository.Data;
+﻿using E_Commerce.Core.Models.Identity;
+using E_Commerce.Repository;
+using E_Commerce.Repository.Data;
 using E_Commerce.Repository.Data.Contexts;
 using E_Commerce_API.Middlewares;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_Commerce_API.Helper
@@ -14,6 +17,8 @@ namespace E_Commerce_API.Helper
             // Get the instance of ECommerceDbContext in our services layer
             var services = scope.ServiceProvider;
             var context = services.GetRequiredService<StoreDbContext>();
+            var identityContext = services.GetRequiredService<StoreIdentityDbContext>();
+            var userManager = services.GetRequiredService<UserManager<AppUser>>();
             var LoggerFactory = services.GetRequiredService<ILoggerFactory>();
             try
             {
@@ -21,6 +26,8 @@ namespace E_Commerce_API.Helper
                 await context.Database.MigrateAsync();
                 // Seed the database
                 await LoadDataSeed.SeedData(context);
+                await identityContext.Database.MigrateAsync();
+                await IdentitySeed.SeedData(userManager);
             }
             catch (Exception ex)
             {
