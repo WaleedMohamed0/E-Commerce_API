@@ -5,10 +5,13 @@ using E_Commerce.Core.Specifications.Products;
 using E_Commerce.Core.Helper;
 using E_Commerce_API.Errors;
 using E_Commerce_API.Attributes;
+using E_Commerce.Core;
+using Microsoft.AspNetCore.Authorization;
 
 namespace E_Commerce_API.Controllers
 {
-    [Cached(200)]
+    //[Cached(200)]
+    [Authorize]
     public class ProductsController : BaseController
     {
         private readonly IProductService productService;

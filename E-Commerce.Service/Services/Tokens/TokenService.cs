@@ -26,7 +26,8 @@ namespace E_Commerce.Service.Services.Tokens
             {
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.MobilePhone, user.PhoneNumber)
+                new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
+                new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
             var roles = userManager.GetRolesAsync(user);
             claims.AddRange(roles.Result.Select(role => new Claim(ClaimTypes.Role, role)));

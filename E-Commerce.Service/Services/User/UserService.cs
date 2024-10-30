@@ -2,11 +2,7 @@
 using E_Commerce.Core.Models.Identity;
 using E_Commerce.Service.Services.Tokens;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace E_Commerce.Service.Services.User
 {
@@ -40,7 +36,6 @@ namespace E_Commerce.Service.Services.User
 
         public async Task<UserDTO?> Register(RegisterDTO registerDTO)
         {
-            if(await CheckEmailExists(registerDTO.Email)) return null;
             var user = new AppUser()
             {
                 Email = registerDTO.Email,
@@ -58,6 +53,6 @@ namespace E_Commerce.Service.Services.User
             };
         }
         public async Task<bool> CheckEmailExists(string email)
-            => await userManager.FindByEmailAsync(email) is not null;
+            => await userManager.Users.AnyAsync(u => u.Email == email);
     }
 }

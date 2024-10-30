@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
+using E_Commerce.Core;
 using E_Commerce.Core.DTOs;
 using E_Commerce.Core.Models;
 using E_Commerce.Repository.Data.Repos;
 using E_Commerce_API.Errors;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_Commerce_API.Controllers
 {
+    [Authorize]
     public class BasketController : BaseController
     {
         private readonly IBasketRepository _basket;

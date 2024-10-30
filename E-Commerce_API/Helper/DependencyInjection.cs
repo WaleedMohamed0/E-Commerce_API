@@ -8,10 +8,13 @@ using E_Commerce.Service.Services.Tokens;
 using E_Commerce.Service.Services.User;
 using E_Commerce_API.Errors;
 using E_Commerce_API.Mapping;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
+using System.Text;
 
 namespace E_Commerce_API.Helper
 {
@@ -27,6 +30,7 @@ namespace E_Commerce_API.Helper
             services.HandleValidationError();
             services.AddRedisService(configuration);
             services.AddIdentityService();
+            services.AddAuthenticationService(configuration);
             return services;
         }
         private static IServiceCollection AddSwagger(this IServiceCollection services)
@@ -94,6 +98,29 @@ namespace E_Commerce_API.Helper
         {
             services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<StoreIdentityDbContext>();
+            return services;
+        }
+        private static IServiceCollection AddAuthenticationService(this IServiceCollection services, IConfiguration configuration)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
+            services.AddAuthentication(options => 
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+              .AddJwtBearer(options =>
+              {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = key,
+                    ValidateIssuer = false,
+                    ValidIssuer = configuration["Jwt:Issuer"],
+                    ValidateAudience = false,
+                    ValidAudience = configuration["Jwt:Audience"],
+                    ValidateLifetime = true
+                };
+            });
             return services;
         }
     }

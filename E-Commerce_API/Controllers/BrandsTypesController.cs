@@ -1,10 +1,13 @@
-﻿using E_Commerce.Core.DTOs.BrandTypeDTO;
+﻿using E_Commerce.Core;
+using E_Commerce.Core.DTOs.BrandTypeDTO;
 using E_Commerce.Service.Services.BrandsAndTypes;
 using E_Commerce_API.Errors;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_Commerce_API.Controllers
 {
+    [Authorize]
     public class BrandsTypesController : BaseController
     {
         private readonly IBrandTypeService brandService;
