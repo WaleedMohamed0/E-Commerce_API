@@ -46,6 +46,7 @@ namespace E_Commerce_API.Helper
             app.UseStatusCodePagesWithReExecute("/not-found");
             app.UseStaticFiles();
             app.UseHttpsRedirection();
+
             app.UseAuthentication();
             app.UseAuthorization();
 

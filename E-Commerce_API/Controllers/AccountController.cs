@@ -4,6 +4,8 @@ using E_Commerce.Core.Models.Identity;
 using E_Commerce.Service.Services.Tokens;
 using E_Commerce.Service.Services.User;
 using E_Commerce_API.Errors;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -30,7 +32,7 @@ namespace E_Commerce_API.Controllers
         public async Task<IActionResult> Login(LoginDTO loginDTO)
         {
             var user = await userService.Login(loginDTO);
-            if (user is null) return Unauthorized(new ApiErrorsResponse(StatusCodes.Status401Unauthorized,"Invalid Email or Password"));
+            if (user is null) return Unauthorized(new ApiErrorsResponse(StatusCodes.Status401Unauthorized, "Invalid Email or Password"));
             return Ok(GeneralResponse.Success(user, "User logged in successfully"));
         }
         [ProducesResponseType<RegisterDTO>(StatusCodes.Status200OK)]
@@ -42,7 +44,7 @@ namespace E_Commerce_API.Controllers
 
             var user = await userService.Register(registerDTO);
             if (user is null) return BadRequest(new ApiErrorsResponse(StatusCodes.Status400BadRequest));
-            
+
             return Ok(GeneralResponse.Success(user, "User registered successfully"));
         }
         [HttpGet("GetCurrentUser")]
@@ -62,4 +64,6 @@ namespace E_Commerce_API.Controllers
             return Ok(GeneralResponse.Success(userDTO));
         }
     }
+
+    
 }

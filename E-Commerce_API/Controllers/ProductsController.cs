@@ -7,6 +7,7 @@ using E_Commerce_API.Errors;
 using E_Commerce_API.Attributes;
 using E_Commerce.Core;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Google;
 
 namespace E_Commerce_API.Controllers
 {

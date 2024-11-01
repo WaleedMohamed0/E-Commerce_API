@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using E_Commerce.Core.Models;
+using E_Commerce.Core.Models.Order;
 
 namespace E_Commerce.Repository.Data.Contexts
 {
@@ -17,5 +18,9 @@ namespace E_Commerce.Repository.Data.Contexts
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductType> Types { get; set; }
         public DbSet<Brand> Brands { get; set; }
+
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
     }
 }

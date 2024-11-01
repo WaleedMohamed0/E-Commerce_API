@@ -1,4 +1,5 @@
 ﻿using E_Commerce.Core.Models;
+using E_Commerce.Core.Models.Order;
 using E_Commerce.Repository.Data.Contexts;
 using System.Text.Json;
 namespace E_Commerce.Repository.Data
@@ -37,7 +38,17 @@ namespace E_Commerce.Repository.Data
                     await context.SaveChangesAsync();
                 }
             }
-           
+            if (!context.DeliveryMethods.Any())
+            {
+                var deliveryMethodData = File.ReadAllText("../E-Commerce.Repository/Data/DataSeed/delivery.json");
+                var deliveryMethods = JsonSerializer.Deserialize<List<DeliveryMethod>>(deliveryMethodData);
+                if (deliveryMethods is not null && deliveryMethods.Count() > 0)
+                {
+                    await context.DeliveryMethods.AddRangeAsync(deliveryMethods);
+                    await context.SaveChangesAsync();
+                }
+            }
+
         }
     }
 }
