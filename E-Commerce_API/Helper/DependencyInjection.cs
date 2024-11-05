@@ -3,6 +3,7 @@ using E_Commerce.Repository.Data.Contexts;
 using E_Commerce.Repository.Data.Repos;
 using E_Commerce.Service.Services.BrandsAndTypes;
 using E_Commerce.Service.Services.Caching;
+using E_Commerce.Service.Services.Orders;
 using E_Commerce.Service.Services.Products;
 using E_Commerce.Service.Services.Tokens;
 using E_Commerce.Service.Services.User;
@@ -65,6 +66,7 @@ namespace E_Commerce_API.Helper
             services.AddScoped<ICacheService, CacheService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IOrderService, OrderService>();
             return services;
         }
         private static IServiceCollection AddAutoMapper(this IServiceCollection services, IConfiguration configuration)
@@ -72,6 +74,7 @@ namespace E_Commerce_API.Helper
             services.AddAutoMapper(m => m.AddProfile(new ProductProfile(configuration)));
             services.AddAutoMapper(m => m.AddProfile(new BrandsAndTypesProfile(configuration)));
             services.AddAutoMapper(m => m.AddProfile(new BasketProfile()));
+            services.AddAutoMapper(m => m.AddProfile(new OrderProfile(configuration)));
             return services;
         }
         private static IServiceCollection HandleValidationError(this IServiceCollection services)

@@ -11,9 +11,10 @@ namespace E_Commerce.Repository.Data.Repos
     public interface IGenericRepository<TEntity,TKey> where TEntity :BaseEntity<TKey>
     {
         //Task<TEntity> GetByIdAsync(TKey id);
-        //Task<IEnumerable<TEntity>> GetAllAsync();
+        Task<IEnumerable<TEntity>> GetAllAsync();
         Task<IEnumerable<TEntity>> GetAllWithSpecAsync(ISpecifications<TEntity, TKey> specs);
         Task<TEntity> GetByIdWithSpecAsync(ISpecifications<TEntity, TKey> specs);
+        Task<TEntity> GetAsync(TKey id);
         Task<TEntity> GetByNameAsync(ISpecifications<TEntity, TKey> specs);
         Task<int> GetCountAsync(ISpecifications<TEntity, TKey> spec);
         Task AddAsync(TEntity entity);

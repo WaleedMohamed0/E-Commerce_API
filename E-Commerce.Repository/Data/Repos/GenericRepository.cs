@@ -28,7 +28,10 @@ namespace E_Commerce.Repository.Data.Repos
         
         public async Task<TEntity> GetByIdWithSpecAsync(ISpecifications<TEntity, TKey> specs)
             => await ApplySpecifications(specs).FirstOrDefaultAsync();
-        
+        public async Task<TEntity> GetAsync(TKey id)
+        {
+            return await context.Set<TEntity>().FindAsync(id);
+        }
 
         public async Task<TEntity> GetByNameAsync(ISpecifications<TEntity, TKey> specs)
         => await ApplySpecifications(specs).FirstOrDefaultAsync();
@@ -42,6 +45,8 @@ namespace E_Commerce.Repository.Data.Repos
         }
         private IQueryable<TEntity> ApplySpecifications(ISpecifications<TEntity, TKey> specs)
             => SpecificationsEvaluator.GetQuery(context.Set<TEntity>(), specs);
-        
+
+        public async Task<IEnumerable<TEntity>> GetAllAsync()
+            => await context.Set<TEntity>().ToListAsync();
     }
 }

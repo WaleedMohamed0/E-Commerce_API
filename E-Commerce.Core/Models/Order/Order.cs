@@ -12,12 +12,13 @@ namespace E_Commerce.Core.Models.Order
         {
 
         }
-        public Order(string buyerEmail, Address shipToAddress, DeliveryMethod deliveryMethod, decimal subtotal, string paymentIntentId)
+        public Order(string buyerEmail, Address shipToAddress, DeliveryMethod deliveryMethod,List<OrderItem> orderItems, decimal subtotal, string paymentIntentId)
         {
             BuyerEmail = buyerEmail;
             ShipToAddress = shipToAddress;
             DeliveryMethod = deliveryMethod;
             Subtotal = subtotal;
+            OrderItems = orderItems;
             PaymentIntentId = paymentIntentId;
         }
         public string BuyerEmail { get; set; }

@@ -27,7 +27,7 @@ namespace E_Commerce_API.Controllers
             this.tokenService = tokenService;
         }
         [ProducesResponseType<LoginDTO>(StatusCodes.Status200OK)]
-        [ProducesResponseType<LoginDTO>(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType<ApiErrorsResponse>(StatusCodes.Status401Unauthorized)]
         [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginDTO loginDTO)
         {
@@ -36,7 +36,7 @@ namespace E_Commerce_API.Controllers
             return Ok(GeneralResponse.Success(user, "User logged in successfully"));
         }
         [ProducesResponseType<RegisterDTO>(StatusCodes.Status200OK)]
-        [ProducesResponseType<RegisterDTO>(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType<ApiErrorsResponse>(StatusCodes.Status400BadRequest)]
         [HttpPost("Register")]
         public async Task<ActionResult<UserDTO>> Register(RegisterDTO registerDTO)
         {
