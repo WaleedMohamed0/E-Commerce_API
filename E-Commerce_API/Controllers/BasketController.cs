@@ -31,7 +31,7 @@ namespace E_Commerce_API.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateBasket(CustomerBasketDTO basketDTO)
         {
-            var updated = await _basket.UpdateBasketAsync(mapper.Map<CustomerBasket>(basketDTO));
+            var updated = await _basket.UpdateBasketAsync(basketDTO);
             return Ok(updated);
         }
         [ProducesResponseType<CustomerBasket>(StatusCodes.Status200OK)]

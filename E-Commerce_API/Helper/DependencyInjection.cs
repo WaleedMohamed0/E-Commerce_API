@@ -4,6 +4,7 @@ using E_Commerce.Repository.Data.Repos;
 using E_Commerce.Service.Services.BrandsAndTypes;
 using E_Commerce.Service.Services.Caching;
 using E_Commerce.Service.Services.Orders;
+using E_Commerce.Service.Services.Payments;
 using E_Commerce.Service.Services.Products;
 using E_Commerce.Service.Services.Tokens;
 using E_Commerce.Service.Services.User;
@@ -67,6 +68,7 @@ namespace E_Commerce_API.Helper
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IPaymentService, PaymentService>();
             return services;
         }
         private static IServiceCollection AddAutoMapper(this IServiceCollection services, IConfiguration configuration)

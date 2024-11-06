@@ -2,6 +2,7 @@
 using E_Commerce.Core.Models.Order;
 using E_Commerce.Core.Specifications.Orders;
 using E_Commerce.Repository.Data.Repos;
+using E_Commerce.Service.Services.Payments;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +15,13 @@ namespace E_Commerce.Service.Services.Orders
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IBasketRepository basketRepository;
+        private readonly IPaymentService paymentService;
 
-        public OrderService(IUnitOfWork unitOfWork, IBasketRepository basketRepository)
+        public OrderService(IUnitOfWork unitOfWork, IBasketRepository basketRepository, IPaymentService paymentService)
         {
             this.unitOfWork = unitOfWork;
             this.basketRepository = basketRepository;
+            this.paymentService = paymentService;
         }
         public async Task<Order> CreateOrderAsync(string buyerEmail, int deliveryMethod, string basketId, Address shippingAddress)
         {
@@ -39,7 +42,15 @@ namespace E_Commerce.Service.Services.Orders
             var deliveryMethodObj = await unitOfWork.genericRepository<DeliveryMethod, int>().GetAsync(deliveryMethod);
             if (deliveryMethodObj == null) return null;
             var subtotal = items.Sum(item => item.Price * item.Quantity);
-            var order = new Order(buyerEmail, shippingAddress, deliveryMethodObj, items, subtotal,"");
+            if(!string.IsNullOrEmpty(basket.PaymentIntentId))
+            {
+                var spec = new OrderSpecificationsWithPaymentIntent(basket.PaymentIntentId);
+                var existingPaymentIntent = await unitOfWork.genericRepository<Order, int>().GetByIdWithSpecAsync(spec);
+                unitOfWork.genericRepository<Order, int>().Delete(existingPaymentIntent);
+            }
+            var basketDTO = await paymentService.CreateOrUpdatePaymentIntent(basketId);
+            if (basketDTO == null) return null;
+            var order = new Order(buyerEmail, shippingAddress, deliveryMethodObj, items, subtotal, basketDTO.PaymentIntentId);
             await unitOfWork.genericRepository<Order, int>().AddAsync(order);
             var result = await unitOfWork.SaveAsync();
             if (result <= 0) return null;
